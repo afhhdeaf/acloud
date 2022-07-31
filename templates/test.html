@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+   <title>Riven Cloud</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/control_panel.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+   <link rel="shortcut icon" href=" {{ url_for('static', filename='images/title.ico') }}">
+</head>
+<body>
+
+    <div class="row">
+        <ul class="list-group col-lg-1" id="haha">
+        {% for k,v in gateways.items() %}
+            <li class="list-group-item">{{ k }}</li>
+        {% endfor %}
+        </ul>
+
+        <ul class="list-group col-lg-1" id="nnodes">
+        {% for k,v in gateways.items() %}
+            {% for item in v %}
+                <li class="list-group-item">
+                     {{ item }}
+                </li>
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+
+    {% for item in gateways %}
+    <div class="row">
+        <div class="col-lg-4 col-sm-3 col-md-3 col-lg-4">
+            <p > {{ item }} </p>
+        </div>
+        <div class="form-check  col-sm-3 col-md-3 col-lg-4">
+            <input class="form-check-input" name="control" type="radio" value="" id="{{ gateways }}">
+            <label class="form-check-label" for="{{ gateways }}">
+            选择
+            </label>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="row col-sm-5 col-md-5 col-lg-6">
+        <div class=" justify-content-between  align-items-center pt-3 pb-2 mb-3 border-bottom col-lg-10">
+            <div class="row">
+                <h1 class="h2">设备列表</h1>
+            </div>
+        </div>
+
+        <div  class="col-lg-10" style="height: 500px;">
+        <!-- <div id="controlDevice" class="col-lg-12">  -->
+            {% if gateways %}
+            <div class="row">
+                <div class=" justify-content-between  align-items-center mb-2 border-bottom col-lg-4">
+                    <p>网关</p>
+                </div>
+                <div class=" justify-content-between  align-items-center mb-2 border-bottom col-lg-7 offset-lg-1">
+                    <p>设备</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <ul class="list-group" id="gateways">
+                    {% for k,v in gateways.items() %}
+                        <li class="list-group-item">{{ k }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-lg-7 offset-lg-1", id="nodes">
+                </div>
+            </div>
+            {% else %}
+                <div class="row">
+                    <h1>没有数据</h1>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+   <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script>
+        $("#gateways li").click(function(){
+            $(this).siblings('li').removeClass('active')
+            $(this).addClass('active')
+            $.ajax({
+                url:"/2016212707/" + $(this).text(),
+                dataType:'json',
+                success:function(ret){
+                    var len = ret.length;
+                    var _html = "";
+                    var temp = "";
+                    for(var i = 0; i < len; i++){
+                        temp = "<div class=\"row\"><div class=\"col-lg-4 col-sm-3 col-md-3 col-lg-4\"><p >" + ret[i] +
+                        "</p></div><div class=\"form-check  col-sm-3 col-md-3 col-lg-4\"><input class=\"form-check-input\" name=\"control\" type=\"radio\" value=\"\" id=\" \" + ret[i] + \" \"><label class=\"form-check-label\" for=\"" + ret[i] +
+                        "\">选择</label></div></div>"
+                        _html = _html + temp;
+                    }
+                    $("#nodes").html(_html);
+                }
+            });
+        })
+    </script>
+</body>
+</html>
